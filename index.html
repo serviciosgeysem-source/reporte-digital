@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GEYSEM - Reporte de Diagnóstico</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fredoka:wght@600&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+
+        .logo-font {
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 1rem;
+            padding: 1.25rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .section-title {
+            color: #000000;
+            border-bottom: 3px solid #facc15;
+            margin-bottom: 1rem;
+            padding-bottom: 0.25rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #64748b;
+            margin-bottom: 0.2rem;
+            text-transform: uppercase;
+            line-height: 1.1;
+        }
+
+        input[type="text"], input[type="number"], input[type="date"], input[type="time"], select, textarea {
+            width: 100%;
+            padding: 0.4rem 0.6rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            background-color: #ffffff;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            border-color: #facc15;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(250, 204, 21, 0.2);
+        }
+
+        .signature-pad {
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            background: #fdfdfd;
+            height: 120px;
+            width: 100%;
+            touch-action: none;
+        }
+
+        .test-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f1f5f9;
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            margin-bottom: 0.75rem;
+            border-left: 4px solid #000000;
+        }
+
+        .photo-upload-zone {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px dashed #e2e8f0;
+        }
+
+        .photo-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #475569;
+            background: #f1f5f9;
+            padding: 0.4rem 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+        }
+
+        .photo-btn:hover {
+            background: #e2e8f0;
+        }
+
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        @media print {
+            .no-print { display: none; }
+            body { background: white; padding: 0; }
+            .card { box-shadow: none; border: 1px solid #eee; margin-bottom: 0.5rem; }
+            .fixed { position: static; box-shadow: none; border: none; }
+            .photo-btn { display: none; }
+        }
+    </style>
+</head>
+<body class="p-4 pb-24">
+
+    <div class="max-w-5xl mx-auto">
+        <!-- Encabezado con Logo -->
+        <div class="flex flex-col md:flex-row justify-between items-center mb-6 bg-white p-6 rounded-lg border-b-4 border-yellow-400 shadow-sm">
+            <div class="flex items-center gap-4 mb-4 md:mb-0">
+                <svg width="240" height="70" viewBox="0 0 240 70" xmlns="http://www.w3.org/2000/svg" class="h-16 w-auto">
+                    <rect width="240" height="70" fill="white"/>
+                    <text x="5" y="52" class="logo-font" font-size="54" fill="#333333" style="letter-spacing: -1.5px; font-weight: 600;">GEY</text>
+                    <path d="M128 5 L108 34 L122 34 L102 65 L132 29 L118 29 L142 5 Z" fill="#facc15" />
+                    <text x="145" y="52" class="logo-font" font-size="54" fill="#333333" style="letter-spacing: -1.5px; font-weight: 600;">EM</text>
+                </svg>
+                <div>
+                    <p class="text-xs font-bold text-gray-500 uppercase text-[9px]">Grupos Electrógenos y Servicios</p>
+                    <p class="text-xs font-bold text-gray-500 uppercase text-[9px]">Eléctricos de México</p>
+                    <p class="text-[10px] text-black font-semibold">www.geysem.com | Tel: 55 3575 9383</p>
+                    <p class="text-[10px] text-black font-semibold">Arabella 31, Col. Miguel Hidalgo, Alcaldía TLAHUAC, C.P. 13200 CDMX</p>
+                </div>
+            </div>
+            <div class="text-center md:text-right">
+                <h1 class="text-xl font-black text-black">REPORTE DE DIAGNÓSTICO</h1>
+                <div class="flex items-center gap-2 mt-2 justify-center md:justify-end">
+                    <input type="text" name="folio_os" placeholder="ORDEN DE SERVICIO" class="w-32 text-center font-bold border-black text-black" required>
+                    <label class="flex items-center gap-1 text-[10px] cursor-pointer font-bold">
+                        <input type="checkbox" name="servicio_foraneo" value="SI" class="rounded accent-black"> FORÁNEO
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <form id="reportForm">
+            <!-- I. Datos Generales -->
+            <div class="card">
+                <div class="section-title">I. Datos Generales del Servicio</div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="field-group"><label>Fecha</label><input type="date" name="fecha_servicio"></div>
+                    <div class="field-group"><label>Zona Metropolitana</label><input type="text" name="zona_metropolitana"></div>
+                    <div class="field-group md:col-span-2"><label>Empresa / Cliente</label><input type="text" name="cliente_empresa"></div>
+                    <div class="field-group md:col-span-4"><label>Dirección del Sitio</label><input type="text" name="direccion_sitio"></div>
+                
+                    <!-- Registro Triple de Tiempos -->
+                    <div class="field-group"><label>Hora Salida Traslado</label><input type="time" name="hora_salida_traslado"></div>
+                    <div class="field-group"><label>Hora Llegada a Sitio</label><input type="time" name="hora_llegada_sitio"></div>
+                    <div class="field-group"><label>Hora de Término</label><input type="time" name="hora_termino"></div>
+                    <div class="field-group"><label>Estacionamiento</label><select name="estacionamiento"><option value="No requerido">No requerido</option><option value="Sí">Sí</option><option value="No">No</option></select></div>
+                    
+                    <div class="field-group md:col-span-2"><label>Responsable en sitio</label><input type="text" name="responsable_sitio"></div>
+                    <div class="field-group md:col-span-2"><label>Requerimiento extra para ingreso</label><input type="text" name="requerimiento_ingreso"></div>
+                    <div class="field-group"><label>Subcontratados</label><select name="subcontratado"><option value="No">No</option><option value="Sí">Sí</option></select></div>
+                </div>
+                <div class="photo-upload-zone no-print">
+                    <label class="photo-btn">
+                        <span>📸 Agregar Fotos Sección I</span>
+                        <input type="file" accept="image/*" multiple class="hidden" onchange="handleSectionPhotos(this, 'seccion_1_fotos')">
+                    </label>
+                    <div class="preview-grid"></div>
+                </div>
+            </div>
+
+            <!-- II. Especificaciones del Equipo -->
+            <div class="card">
+                <div class="section-title">II. Especificaciones del Equipo</div>
+                <div class="flex flex-col gap-4">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="field-group"><label>Marca</label><input type="text" name="equipo_marca"></div>
+                        <div class="field-group"><label>Capacidad (KW)</label><input type="text" name="equipo_capacidad_kw"></div>
+                        <div class="field-group"><label>Voltaje VCA</label><input type="text" name="equipo_voltaje_vca"></div>
+                        <div class="field-group"><label>Voltaje VCD</label><input type="text" name="equipo_voltaje_vcd"></div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-3 bg-yellow-50/50 rounded-md border border-yellow-100">
+                        <div class="field-group"><label>Motor (Marca)</label><input type="text" name="motor_marca"></div>
+                        <div class="field-group"><label>Modelo de Motor</label><input type="text" name="motor_modelo"></div>
+                        <div class="field-group"><label>Serie de Motor</label><input type="text" name="motor_serie"></div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-3 bg-yellow-50/50 rounded-md border border-yellow-100">
+                        <div class="field-group"><label>Generador (Marca)</label><input type="text" name="generador_marca"></div>
+                        <div class="field-group"><label>Modelo Generador</label><input type="text" name="generador_modelo"></div>
+                        <div class="field-group"><label>Serie Generador</label><input type="text" name="generador_serie"></div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-3 bg-slate-50/50 rounded-md border border-slate-200">
+                        <div class="field-group"><label>Precalentador (Cantidad)</label><input type="text" name="precalentador_cantidad" placeholder="Tipo de precalentador y cantidad"></div>
+                        <div class="field-group"><label>Voltaje de Operación </label><input type="text" name="precalentador_voltaje" placeholder="VCA"></div>
+                        <div class="field-group"><label>Potencia </label><input type="text" name="precalentador_potencia" placeholder="Watts"></div>
+                    </div>
+                </div>
+                <div class="photo-upload-zone no-print">
+                    <label class="photo-btn">
+                        <span>📸 Agregar Fotos Sección II</span>
+                        <input type="file" accept="image/*" multiple class="hidden" onchange="handleSectionPhotos(this, 'seccion_2_fotos')">
+                    </label>
+                    <div class="preview-grid"></div>
+                </div>
+            </div>
+
+            <!-- III. Estado de componentes -->
+            <div class="card">
+                <div class="section-title">III. Estado de componentes de la planta de emergencia</div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="field-group">
+                        <label>1. Nivel de aceite y refrigerante revisado</label>
+                        <select name="comp_nivel_aceite_refrigerante">
+                            <option value="">Seleccione...</option>
+                            <option value="Revisado - OK">Revisado - OK</option>
+                            <option value="Revisado - Requiere Relleno">Revisado - Requiere Relleno</option>
+                            <option value="No Revisado">No Revisado</option>
+                        </select>
+                    </div>
+                    <div class="field-group">
+                        <label>2. Nivel de combustible revisado</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <select name="comp_nivel_combustible_est">
+                                <option value="">Seleccione...</option>
+                                <option value="Revisado - OK">Revisado - OK</option>
+                                <option value="Requiere Relleno">Requiere Relleno</option>
+                            </select>
+                            <input type="text" name="comp_nivel_combustible_pct" placeholder="Porcentaje %">
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <label>3. Estado del tapón del radiador / Libras</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <select name="comp_tapon_radiador_est"><option value="">Estado...</option><option value="Óptimo">Óptimo</option><option value="Dañado">Dañado</option></select>
+                            <input type="text" name="comp_tapon_radiador_psi" placeholder="Libras (PSI)">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 border-t pt-4">
+                    <div class="md:col-span-2 lg:col-span-4">
+                        <label>4. MANGUERAS</label>
+                    </div>
+                    <div class="field-group">
+                        <label>Alimentación y Retorno Combustible</label>
+                        <div class="space-y-2">
+                            <select name="mang_combustible_est"><option value="">Estado...</option><option value="Óptimo">Óptimo</option><option value="Requiere Cambio">Requiere Cambio</option></select>
+                            <input type="text" name="mang_combustible_medida" placeholder="Medida">
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <label>Manguera de radiador superior</label>
+                        <div class="space-y-2">
+                            <select name="mang_rad_sup_est"><option value="">Estado...</option><option value="Óptimo">Óptimo</option><option value="Requiere Cambio">Requiere Cambio</option></select>
+                            <input type="text" name="mang_rad_sup_medida" placeholder="Medida">
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <label>Manguera de radiador inferior</label>
+                        <div class="space-y-2">
+                            <select name="mang_rad_inf_est"><option value="">Estado...</option><option value="Óptimo">Óptimo</option><option value="Requiere Cambio">Requiere Cambio</option></select>
+                            <input type="text" name="mang_rad_inf_medida" placeholder="Medida">
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <label>Mangueras de precalentador</label>
+                        <div class="space-y-2">
+                            <select name="mang_precal_est"><option value="">Estado...</option><option value="Óptimo">Óptimo</option><option value="Requiere Cambio">Requiere Cambio</option></select>
+                            <input type="text" name="mang_precal_medida" placeholder="Medida">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 border-t pt-4">
+                    <div class="md:col-span-3">
+                        <label>5. ESTADO DE BANDAS</label>
+                    </div>
+                    <div class="field-group"><label>Estado general</label><select name="bandas_estado"><option value="">Estado</option><option value="Óptimo">Óptimo</option><option value="Requiere Cambio">Requiere Cambio</option></select></div>
+                    <div class="field-group"><label>Tipo de banda</label><input type="text" name="bandas_tipo" placeholder="Ej. Dentada, Lisa, en V"></div>
+                    <div class="field-group"><label>Código de banda</label><input type="text" name="bandas_codigo" placeholder="Número de parte/Código"></div>
+                </div>
+                <div class="photo-upload-zone no-print">
+                    <label class="photo-btn">
+                        <span>📸 Agregar Fotos Sección III</span>
+                        <input type="file" accept="image/*" multiple class="hidden" onchange="handleSectionPhotos(this, 'seccion_3_fotos')">
+                    </label>
+                    <div class="preview-grid"></div>
+                </div>
+            </div>
+
+            <!-- IV. Tablero de Transferencia -->
+            <div class="card">
+                <div class="section-title">IV. Tablero de Transferencia</div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="field-group"><label>Tipo de Gabinete</label><input type="text" name="tablero_gabinete"></div>
+                    <div class="field-group"><label>Tipo de Transferencia</label><input type="text" name="tablero_tipo_transferencia"></div>
+                    <div class="field-group md:col-span-2"><label>Capacidad de Transferencia</label><input type="text" name="tablero_capacidad_amp" placeholder="Amperes"></div>
+                    <div class="field-group md:col-span-2"><label>¿Cuántos tableros hay? / ¿Qué tipo?</label><input type="text" name="tablero_cantidad_tipo"></div>
+                    <div class="field-group"><label>Módulo de Control</label><input type="text" name="tablero_modulo_control"></div>
+                    <div class="field-group"><label>ATS o AMF</label><input type="text" name="tablero_ats_amf"></div>
+                    <div class="field-group md:col-span-2"><label>Horas de Trabajo</label><input type="text" name="tablero_horometro"></div>
+                    <div class="field-group md:col-span-2"><label>Equipo Adicional</label><input type="text" name="tablero_equipo_adicional"></div>
+                </div>
+                <div class="photo-upload-zone no-print">
+                    <label class="photo-btn">
+                        <span>📸 Agregar Fotos Sección IV</span>
+                        <input type="file" accept="image/*" multiple class="hidden" onchange="handleSectionPhotos(this, 'seccion_4_fotos')">
+                    </label>
+                    <div class="preview-grid"></div>
+                </div>
+            </div>
+
+            <!-- V. Instalación -->
+            <div class="card">
+                <div class="section-title">V. Instalación de la planta de emergencia</div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="field-group lg:col-span-2"><label>Ubicación de la planta</label><input type="text" name="inst_ubicacion" placeholder="Ej. Azotea, Sótano, Cuarto de máquinas"></div>
+                    <div class="field-group"><label>Describa el espacio</label><input type="text" name="inst_descripcion_espacio" placeholder="¿Hay más equipos electricos?, espacio, etc"></div>
+                    <div class="field-group"><label>Ubicación Tablero - Planta</label><input type="text" name="inst_distancia_tablero_planta" placeholder="Distancia o relación de cercanía"></div>
+                    <div class="field-group"><label>Ventilación adecuada</label><select name="inst_ventilacion_ok"><option value="">Seleccione...</option><option value="SÍ">SÍ</option><option value="NO">NO</option></select></div>
+                    
+                    <div class="field-group"><label>Escape</label><select name="inst_escape_ok"><option value="">Seleccione...</option><option value="SÍ">SÍ</option><option value="NO">NO</option></select></div>
+                    <div class="field-group"><label>Longitud del tubo de escape</label><input type="text" name="inst_escape_longitud_m" placeholder="Metros"></div>
+                    <div class="field-group"><label>Diámetro del tubo de escape</label><input type="text" name="inst_escape_diametro_in" placeholder="Pulgadas"></div>
+
+                    <div class="field-group"><label>¿Cuenta con silenciador?</label><select name="inst_silenciador_ok"><option value="">Seleccione...</option><option value="SÍ">SÍ</option><option value="NO">NO</option></select></div>
+                    <div class="field-group"><label>¿El escape está forrado?</label><select name="inst_escape_forrado_ok"><option value="">Seleccione...</option><option value="SÍ">SÍ</option><option value="NO">NO</option></select></div>
+                    <div class="field-group"><label>¿Caseta o Abierta?</label><select name="inst_tipo_caseta"><option value="">Seleccione...</option><option value="Cuenta con caseta">Cuenta con caseta</option><option value="Está abierta">Está abierta </option></select></div>
+                    <div class="field-group"><label>¿Cuenta con anclaje y amortiguadores?</label><select name="inst_anclaje_amort_ok"><option value="">Seleccione...</option><option value="SÍ">SÍ</option><option value="NO">NO</option></select></div>
+
+                    <div class="field-group lg:col-span-2">
+                        <label>Tanque de combustible</label>
+                        <select id="tanqueTipo" name="inst_tanque_tipo" onchange="toggleTanqueExterno()">
+                            <option value="">Seleccione...</option>
+                            <option value="base">Base tanque </option>
+                            <option value="externo">Tanque externo </option>
+                        </select>
+                    </div>
+                    
+                    <div id="camposTanqueExterno" class="contents hidden">
+                        <div class="field-group"><label>Diámetro tubería de alimentación</label><input type="text" name="inst_tuberia_alim_in" placeholder="Pulgadas"></div>
+                        <div class="field-group"><label>Diámetro tubería de retorno</label><input type="text" name="inst_tuberia_ret_in" placeholder="Pulgadas"></div>
+                    </div>
+                </div>
+                <div class="photo-upload-zone no-print">
+                    <label class="photo-btn">
+                        <span>📸 Agregar Fotos Sección V</span>
+                        <input type="file" accept="image/*" multiple class="hidden" onchange="handleSectionPhotos(this, 'seccion_5_fotos')">
+                    </label>
+                    <div class="preview-grid"></div>
+                </div>
+            </div>
+
+            <!-- VI. Insumos -->
+            <div class="card">
+                <div class="section-title">VI. Insumos y Filtros</div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-[11px] border-collapse">
+                        <thead>
+                            <tr class="bg-yellow-400 text-black">
+                                <th class="p-2 border border-slate-300 text-left uppercase font-black">Tipo de Filtro</th>
+                                <th class="p-2 border border-slate-300 text-left uppercase font-black">Marca</th>
+                                <th class="p-2 border border-slate-300 text-left uppercase font-black">Modelo</th>
+                                <th class="p-2 border border-slate-300 text-center uppercase w-16 font-black">Cant.</th>
+                                <th class="p-2 border border-slate-300 text-center uppercase w-20 font-black">¿Cambio?</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <script>
+                                const filtros = [
+                                    { nombre: "Aceite", key: "filtro_aceite" },
+                                    { nombre: "Aire", key: "filtro_aire" },
+                                    { nombre: "Prim. Combustible", key: "filtro_prim_comb" },
+                                    { nombre: "Sec. Combustible", key: "filtro_sec_comb" },
+                                    { nombre: "Agua", key: "filtro_agua" },
+                                    { nombre: "Separador Agua", key: "filtro_sep_agua" }
+                                ];
+                                filtros.forEach(f => {
+                                    document.write(`
+                                        <tr>
+                                            <td class="p-2 border border-slate-200 font-bold text-slate-700 bg-slate-50">${f.nombre}</td>
+                                            <td class="p-1 border border-slate-200"><input type="text" name="${f.key}_marca" class="border-0 bg-transparent h-6 p-0"></td>
+                                            <td class="p-1 border border-slate-200"><input type="text" name="${f.key}_modelo" class="border-0 bg-transparent h-6 p-0"></td>
+                                            <td class="p-1 border border-slate-200"><input type="number" name="${f.key}_cant" class="border-0 bg-transparent h-6 p-0 text-center"></td>
+                                            <td class="p-1 border border-slate-200 text-center"><input type="checkbox" name="${f.key}_cambio" value="SI" class="w-4 h-4 accent-black"></td>
+                                        </tr>
+                                    `);
+                                });
+                            </script>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="photo-upload-zone no-print">
+                    <label class="photo-btn">
+                        <span>📸 Agregar Fotos Sección VI</span>
+                        <input type="file" accept="image/*" multiple class="hidden" onchange="handleSectionPhotos(this, 'seccion_6_fotos')">
+                    </label>
+                    <div class="preview-grid"></div>
+                </div>
+            </div>
+
+            <!-- VII. Batería -->
+            <div class="card">
+                <div class="section-title">VII. Estado de la Batería</div>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                    <div class="field-group"><label>Fecha de batería</label><input type="text" name="bat_fecha" placeholder="MM/AA"></div>
+                    <div class="field-group"><label>Cantidad</label><input type="number" name="bat_cantidad" placeholder="0"></div>
+                    <div class="field-group"><label>Celdas</label><input type="text" name="bat_celdas"></div>
+                    <div class="field-group"><label>Voltaje en Reposo</label><input type="text" name="bat_volt_reposo" placeholder="VCD"></div>
+                    <div class="field-group"><label>Estado Terminales / Cables</label><select name="bat_terminales_est"><option value="">Seleccione...</option><option value="Óptimo">Óptimo</option><option value="Regular">Regular</option><option value="Dañado">Dañado</option></select></div>
+                    <div class="field-group"><label>Estado de Bornes</label><select name="bat_bornes_est"><option value="">Seleccione...</option><option value="Limpio">Limpio</option><option value="Sulfatado">Sulfatado</option><option value="Flojo">Flojo</option></select></div>
+                </div>
+                <div class="photo-upload-zone no-print">
+                    <label class="photo-btn">
+                        <span>📸 Agregar Fotos Sección VII</span>
+                        <input type="file" accept="image/*" multiple class="hidden" onchange="handleSectionPhotos(this, 'seccion_7_fotos')">
+                    </label>
+                    <div class="preview-grid"></div>
+                </div>
+            </div>
+
+            <!-- VIII. Pruebas -->
+            <div class="card">
+                <div class="section-title">VIII. Pruebas de Funcionamiento</div>
+                <div class="space-y-6">
+                    <div class="test-section">
+                        <div class="test-header"><h4 class="font-black text-black text-[10px] uppercase">1. Prueba de arranque en manual sin carga</h4></div>
+                        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 px-1">
+                            <div class="field-group"><label>Voltaje Gen. (L-L)</label><input type="text" name="p1_volt_gen_ll" placeholder="VCA"></div>
+                            <div class="field-group"><label>Voltaje Gen. (L-N)</label><input type="text" name="p1_volt_gen_ln" placeholder="VCA"></div>
+                            <div class="field-group"><label>Voltaje Red Normal (L-L)</label><input type="text" name="p1_volt_red_ll" placeholder="VCA"></div>
+                            <div class="field-group"><label>Voltaje Red Normal (L-N)</label><input type="text" name="p1_volt_red_ln" placeholder="VCA"></div>
+                            <div class="field-group"><label>Frecuencia (Hz)</label><input type="text" name="p1_frecuencia_hz" placeholder="HZ"></div>
+                            <div class="field-group"><label>Presión Aceite</label><input type="text" name="p1_presion_aceite"></div>
+                            <div class="field-group"><label>Temperatura</label><input type="text" name="p1_temperatura"></div>
+                        </div>
+                    </div>
+                    <div class="test-section">
+                        <div class="test-header"><h4 class="font-black text-black text-[10px] uppercase">2. Prueba de arranque en automático</h4></div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 px-1 items-end">
+                            <div class="field-group"><label>Voltaje de Gen. (L-L)</label><input type="text" name="p2_volt_gen_ll" placeholder="VCA"></div>
+                            <div class="field-group"><label>Voltaje de Gen. (L-N)</label><input type="text" name="p2_volt_gen_ln" placeholder="VCA"></div>
+                            <div class="field-group"><label>Frecuencia (Hz)</label><input type="text" name="p2_frecuencia_hz" placeholder="HZ"></div>
+                            <div class="field-group"><label>T. Respaldo Transf.</label><input type="text" name="p2_t_respaldo_seg" placeholder="seg"></div>
+                            <div class="field-group"><label>T. Retardo Retransf.</label><input type="text" name="p2_t_retardo_min" placeholder="min"></div>
+                            <div class="field-group"><label>Presión Aceite</label><input type="text" name="p2_presion_aceite"></div>
+                            <div class="field-group"><label>Temperatura</label><input type="text" name="p2_temperatura"></div>
+                            <div class="field-group lg:col-span-2">
+                                <label>Corriente de carga (AMP)</label>
+                                <div class="grid grid-cols-3 gap-1">
+                                    <input type="text" name="p2_amp_l1" placeholder="L1" class="text-center px-1">
+                                    <input type="text" name="p2_amp_l2" placeholder="L2" class="text-center px-1">
+                                    <input type="text" name="p2_amp_l3" placeholder="L3" class="text-center px-1">
+                                </div>
+                            </div>
+                            <div class="field-group lg:col-span-3 pb-1">
+                                <label class="flex items-center gap-2 cursor-pointer font-bold text-[10px] text-slate-700">
+                                    <input type="checkbox" name="p2_ats_verificado" value="SI" class="w-4 h-4 rounded accent-black"> OPERACIÓN DE UNIDAD DE TRANSFERENCIA VERIFICADO
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8 p-4 bg-yellow-400 rounded border-2 border-black flex flex-wrap items-center justify-between gap-4">
+                    <label class="font-black text-black text-[10px] uppercase">El equipo se deja en posición final:</label>
+                    <div class="flex gap-6">
+                        <label class="flex items-center gap-2 text-xs font-bold"><input type="radio" name="posicion_final_equipo" value="AUTOMÁTICO" class="w-4 h-4 accent-black"> AUTOMÁTICO</label>
+                        <label class="flex items-center gap-2 text-xs font-bold"><input type="radio" name="posicion_final_equipo" value="MANUAL" class="w-4 h-4 accent-black"> MANUAL</label>
+                        <label class="flex items-center gap-2 text-xs font-bold"><input type="radio" name="posicion_final_equipo" value="PARO" class="w-4 h-4 accent-black"> PARO</label>
+                    </div>
+                </div>
+                <div class="photo-upload-zone no-print">
+                    <label class="photo-btn">
+                        <span>📸 Agregar Fotos Sección VIII</span>
+                        <input type="file" accept="image/*" multiple class="hidden" onchange="handleSectionPhotos(this, 'seccion_8_fotos')">
+                    </label>
+                    <div class="preview-grid"></div>
+                </div>
+            </div>
+
+            <!-- IX. Observaciones -->
+            <div class="card">
+                <div class="section-title">IX. Observaciones y Recomendaciones</div>
+                
+                <!-- Alerta Especial para Ventas -->
+                <div class="mb-4 p-3 bg-amber-100 border-l-4 border-amber-500 rounded flex items-center justify-between">
+                    <div>
+                        <span class="text-xs font-extrabold text-amber-900 uppercase">⚡ Alerta Comercial para Ventas:</span>
+                        <p class="text-[11px] text-amber-800">Marca esta casilla si detectaste fallas o componentes que requieren cotizarse por separado.</p>
+                    </div>
+                    <label class="flex items-center gap-2 bg-white px-3 py-1.5 rounded border border-amber-300 font-bold text-xs cursor-pointer shadow-sm">
+                        <input type="checkbox" name="alerta_requiere_cotizacion_extra" value="SI" class="w-4 h-4 accent-amber-600">
+                        REQUIERE COTIZACIÓN ADICIONAL
+                    </label>
+                </div>
+
+                <textarea name="observaciones_recomendaciones" rows="4" class="w-full p-3 border border-slate-300 rounded-md text-sm" placeholder="Ingrese observaciones, recomendaciones o sugerencias"></textarea>
+                
+                <div class="photo-upload-zone no-print">
+                    <label class="photo-btn">
+                        <span>📸 Agregar Fotos Sección IX</span>
+                        <input type="file" accept="image/*" multiple class="hidden" onchange="handleSectionPhotos(this, 'seccion_9_fotos')">
+                    </label>
+                    <div class="preview-grid"></div>
+                </div>
+            </div>
+
+            <!-- X. Cierre -->
+            <div class="card">
+                <div class="section-title">X. Conformidad y Cierre</div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="text-center">
+                        <div class="field-group mb-2"><label>Técnico(s) GEYSEM</label><input type="text" name="nombre_tecnico_geysem" class="text-center" required></div>
+                        <div class="signature-pad" id="signTecnico"></div>
+                        <input type="hidden" name="firma_tecnico_base64" id="inputFirmaTecnico">
+                        <button type="button" class="text-[10px] text-red-600 font-bold uppercase mt-1 no-print" onclick="clearSign('signTecnico', 'inputFirmaTecnico')">Limpiar Firma</button>
+                    </div>
+                    <div class="text-center">
+                        <div class="field-group mb-2"><label>Cliente / Responsable</label><input type="text" name="nombre_cliente_responsable" class="text-center" required></div>
+                        <div class="signature-pad" id="signCliente"></div>
+                        <input type="hidden" name="firma_cliente_base64" id="inputFirmaCliente">
+                        <button type="button" class="text-[10px] text-red-600 font-bold uppercase mt-1 no-print" onclick="clearSign('signCliente', 'inputFirmaCliente')">Limpiar Firma</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-sm border-t flex gap-4 justify-center shadow-lg no-print">
+                <button type="button" onclick="window.print()" class="bg-black text-yellow-400 px-8 py-2 rounded-full font-bold text-sm shadow hover:bg-zinc-900 transition">IMPRIMIR / PDF</button>
+                <button type="submit" class="bg-yellow-400 text-black px-8 py-2 rounded-full font-bold text-sm shadow hover:bg-yellow-500 transition">GUARDAR REPORTE</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // URL Oficial de tu conector de Google Apps Script
+        const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyfNKmrzk3tud0bMc49Mn3yfhABIBguyZ3j4nrCr6ebwFugpKlavOoGP8Ao6uhgX5p7MQ/exec";
+
+        function toggleTanqueExterno() {
+            const select = document.getElementById('tanqueTipo');
+            const campos = document.getElementById('camposTanqueExterno');
+            select.value === 'externo' ? campos.classList.remove('hidden') : campos.classList.add('hidden');
+        }
+
+        // Compresión automática de imágenes mediante Canvas (Máx. 1024px, Calidad 0.7)
+        function compressImage(file, callback) {
+            const maxWidth = 1024;
+            const maxHeight = 1024;
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > maxWidth) {
+                            height = Math.round((height * maxWidth) / width);
+                            width = maxWidth;
+                        }
+                    } else {
+                        if (height > maxHeight) {
+                            width = Math.round((width * maxHeight) / height);
+                            height = maxHeight;
+                        }
+                    }
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                    callback(dataUrl);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function handleSectionPhotos(input, inputNameGroup) {
+            const previewGrid = input.closest('.photo-upload-zone').querySelector('.preview-grid');
+            
+            Array.from(input.files).forEach(file => {
+                compressImage(file, (compressedDataUrl) => {
+                    const container = document.createElement('div');
+                    container.className = "relative group";
+                    container.innerHTML = `
+                        <img src="${compressedDataUrl}" class="w-full aspect-square object-cover rounded border border-slate-200">
+                        <input type="hidden" name="${inputNameGroup}[]" value="${compressedDataUrl}">
+                        <button type="button" onclick="this.parentElement.remove()" class="absolute -top-1 -right-1 bg-red-600 text-white w-4 h-4 rounded-full text-[10px] no-print">×</button>
+                    `;
+                    previewGrid.appendChild(container);
+                });
+            });
+            input.value = "";
+        }
+
+        function clearSign(padId, hiddenInputId) {
+            const canvas = document.getElementById(padId).querySelector('canvas');
+            canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+            document.getElementById(hiddenInputId).value = "";
+        }
+
+        document.querySelectorAll('.signature-pad').forEach(pad => {
+            let drawing = false;
+            let canvas = document.createElement('canvas');
+            pad.appendChild(canvas);
+            
+            const resize = () => { canvas.width = pad.offsetWidth; canvas.height = pad.offsetHeight; }
+            window.addEventListener('resize', resize); 
+            resize();
+            
+            const ctx = canvas.getContext('2d');
+            ctx.strokeStyle = '#000'; 
+            ctx.lineWidth = 2; 
+            ctx.lineCap = 'round';
+
+            const hiddenInputId = pad.id === 'signTecnico' ? 'inputFirmaTecnico' : 'inputFirmaCliente';
+
+            const updateHiddenInput = () => {
+                document.getElementById(hiddenInputId).value = canvas.toDataURL('image/png');
+            };
+
+            const getPos = (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                return { x: clientX - rect.left, y: clientY - rect.top };
+            };
+
+            const start = (e) => { 
+                drawing = true; 
+                const pos = getPos(e); 
+                ctx.beginPath(); 
+                ctx.moveTo(pos.x, pos.y); 
+            };
+
+            const move = (e) => { 
+                if (!drawing) return; 
+                e.preventDefault(); 
+                const pos = getPos(e); 
+                ctx.lineTo(pos.x, pos.y); 
+                ctx.stroke(); 
+            };
+
+            const stop = () => {
+                if (drawing) {
+                    drawing = false;
+                    updateHiddenInput();
+                }
+            };
+
+            canvas.addEventListener('mousedown', start); 
+            canvas.addEventListener('touchstart', start);
+            canvas.addEventListener('mousemove', move); 
+            canvas.addEventListener('touchmove', move);
+            window.addEventListener('mouseup', stop); 
+            window.addEventListener('touchend', stop);
+        });
+
+        // Evento de Envío del Formulario a Google Apps Script
+        document.getElementById('reportForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Validar Firmas Obligatorias
+            const firmaTecnico = document.getElementById('inputFirmaTecnico').value;
+            const firmaCliente = document.getElementById('inputFirmaCliente').value;
+
+            if (!firmaTecnico || !firmaCliente) {
+                alert("⚠️ Por favor asegúrate de que tanto la firma del técnico como la del cliente estén capturadas antes de guardar.");
+                return;
+            }
+
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerText;
+            submitBtn.disabled = true;
+            submitBtn.innerText = "GENERANDO PDF Y GUARDANDO...";
+
+            try {
+                const formData = new FormData(e.target);
+                const payload = {};
+
+                // Recopilar los campos normales del formulario
+                formData.forEach((value, key) => {
+                    if (!key.includes('fotos')) {
+                        payload[key] = value;
+                    }
+                });
+
+                // Recopilar fotografías comprimidas
+                payload.fotos = [];
+                const photoInputs = document.querySelectorAll('input[name*="fotos[]"]');
+                photoInputs.forEach((input) => {
+                    payload.fotos.push({
+                        seccion: input.name.replace('[]', ''),
+                        base64: input.value
+                    });
+                });
+
+                // CAPTURAR Y CONVERTIR EL REPORTE EN HTML ESTRUCTURADO PARA GENERAR PDF
+                let clonedReport = document.documentElement.cloneNode(true);
+                
+                // Ocultar botones flotantes e interfaz no imprimible para el PDF
+                clonedReport.querySelectorAll('.no-print').forEach(el => el.remove());
+
+                // Estampar visualmente las imágenes de firma en el clon
+                const tecSignImg = `<img src="${firmaTecnico}" style="max-height:80px; margin:0 auto;">`;
+                const cliSignImg = `<img src="${firmaCliente}" style="max-height:80px; margin:0 auto;">`;
+                clonedReport.querySelector('#signTecnico').innerHTML = tecSignImg;
+                clonedReport.querySelector('#signCliente').innerHTML = cliSignImg;
+
+                // Estampar los valores ingresados por el usuario en las etiquetas HTML
+                clonedReport.querySelectorAll('input, select, textarea').forEach(input => {
+                    const name = input.getAttribute('name');
+                    if (name && payload[name]) {
+                        if (input.type === 'checkbox' || input.type === 'radio') {
+                            if (input.checked) input.setAttribute('checked', 'checked');
+                        } else {
+                            input.setAttribute('value', payload[name]);
+                        }
+                    }
+                });
+
+                // Adjuntar HTML renderizado al paquete de datos
+                payload.html_content = "<!DOCTYPE html><html>" + clonedReport.querySelector('head').outerHTML + clonedReport.querySelector('body').outerHTML + "</html>";
+
+                // Enviar el paquete a Google Apps Script
+                await fetch(GOOGLE_APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                alert("✅ ¡Reporte guardado con éxito!\n\nSe generó la copia del reporte en PDF, se registraron los datos en la hoja de control y las evidencias e imágenes de firma fueron guardadas en la carpeta de Google Drive.");
+
+            } catch (error) {
+                console.error("Error al guardar el reporte:", error);
+                alert("❌ Ocurrió un error al intentar guardar el reporte. Por favor revisa tu conexión.");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = originalBtnText;
+            }
+        });
+    </script>
+</body>
+</html>
