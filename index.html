@@ -546,21 +546,30 @@
                 </div>
             </div>
 
-            <!-- Barra de botones flotante modificada -->
+            <!-- Botones Modificados para Redirección Externa -->
             <div class="fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-sm border-t flex gap-4 justify-center shadow-lg no-print">
-                <a href="https://script.google.com/macros/s/AKfycbyfNKmrzk3tud0bMc49Mn3yfhABIBguyZ3j4nrCr6ebwFugpKlavOoGP8Ao6uhgX5p7MQ/exec" target="_blank" class="bg-black text-yellow-400 px-8 py-2 rounded-full font-bold text-sm shadow hover:bg-zinc-900 transition flex items-center justify-center no-underline">
-                    ABRIR APLICACIÓN / URL
-                </a>
-                <button type="submit" class="bg-yellow-400 text-black px-8 py-2 rounded-full font-bold text-sm shadow hover:bg-yellow-500 transition">
-                    GUARDAR REPORTE
-                </button>
+                <button type="button" onclick="imprimirYRedireccionar()" class="bg-black text-yellow-400 px-8 py-2 rounded-full font-bold text-sm shadow hover:bg-zinc-900 transition">IMPRIMIR / PDF</button>
+                <button type="submit" class="bg-yellow-400 text-black px-8 py-2 rounded-full font-bold text-sm shadow hover:bg-yellow-500 transition">GUARDAR REPORTE</button>
             </div>
         </form>
     </div>
 
     <script>
-        // URL Oficial de tu conector de Google Apps Script
+        // Configuración de URLs para Redirecciones Externas
         const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyfNKmrzk3tud0bMc49Mn3yfhABIBguyZ3j4nrCr6ebwFugpKlavOoGP8Ao6uhgX5p7MQ/exec";
+        
+        // Sustituye con la URL externa de salida requerida
+        const URL_REDIRECCION_EXITO = "https://www.geysem.com/"; 
+
+        function imprimirYRedireccionar() {
+            window.print();
+            // Ejecuta la redirección tras finalizar la acción de impresión
+            setTimeout(() => {
+                if (confirm("¿Deseas salir del formulario e ir a la página externa?")) {
+                    window.location.href = URL_REDIRECCION_EXITO;
+                }
+            }, 500);
+        }
 
         function toggleTanqueExterno() {
             const select = document.getElementById('tanqueTipo');
@@ -687,7 +696,7 @@
             window.addEventListener('touchend', stop);
         });
 
-        // Evento de Envío del Formulario a Google Apps Script
+        // Evento de Envío del Formulario con Redirección de Salida
         document.getElementById('reportForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -726,19 +735,15 @@
                     });
                 });
 
-                // CAPTURAR Y CONVERTIR EL REPORTE EN HTML ESTRUCTURADO PARA GENERAR PDF
+                // Capturar y estructurar el HTML para la generación del PDF
                 let clonedReport = document.documentElement.cloneNode(true);
-                
-                // Ocultar botones flotantes e interfaz no imprimible para el PDF
                 clonedReport.querySelectorAll('.no-print').forEach(el => el.remove());
 
-                // Estampar visualmente las imágenes de firma en el clon
                 const tecSignImg = `<img src="${firmaTecnico}" style="max-height:80px; margin:0 auto;">`;
                 const cliSignImg = `<img src="${firmaCliente}" style="max-height:80px; margin:0 auto;">`;
                 clonedReport.querySelector('#signTecnico').innerHTML = tecSignImg;
                 clonedReport.querySelector('#signCliente').innerHTML = cliSignImg;
 
-                // Estampar los valores ingresados por el usuario en las etiquetas HTML
                 clonedReport.querySelectorAll('input, select, textarea').forEach(input => {
                     const name = input.getAttribute('name');
                     if (name && payload[name]) {
@@ -750,10 +755,9 @@
                     }
                 });
 
-                // Adjuntar HTML renderizado al paquete de datos
                 payload.html_content = "<!DOCTYPE html><html>" + clonedReport.querySelector('head').outerHTML + clonedReport.querySelector('body').outerHTML + "</html>";
 
-                // Enviar el paquete a Google Apps Script
+                // Envío de datos a Google Apps Script
                 await fetch(GOOGLE_APPS_SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
@@ -763,12 +767,14 @@
                     body: JSON.stringify(payload)
                 });
 
-                alert("✅ ¡Reporte guardado con éxito!\n\nSe generó la copia del reporte en PDF, se registraron los datos en la hoja de control y las evidencias e imágenes de firma fueron guardadas en la carpeta de Google Drive.");
+                alert("✅ ¡Reporte guardado con éxito!\n\nRedireccionando al sistema...");
+
+                // Redirección a la URL externa tras guardar exitosamente
+                window.location.href = URL_REDIRECCION_EXITO;
 
             } catch (error) {
                 console.error("Error al guardar el reporte:", error);
                 alert("❌ Ocurrió un error al intentar guardar el reporte. Por favor revisa tu conexión.");
-            } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerText = originalBtnText;
             }
